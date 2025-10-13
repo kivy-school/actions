@@ -1,5 +1,5 @@
-name: 'Hello World'
-description: 'Greet someone'
+name: 'anaconda_upload'
+description: 'Anaconda.org Upload'
 inputs:
   username:  # id of input
     description: 'anaconda.org username'
@@ -18,15 +18,15 @@ runs:
   steps:
 
     - name: install anaconda client
-        run: |
-          pip install anaconda-client anaconda-auth
+      run: |
+        pip install anaconda-client anaconda-auth
       
     - name: login-to-anaconda
-            run: |
-              anaconda login \
-                  --at anaconda.org \
-                  --username ${{ inputs.username }} \
-                  --password "${{ inputs.password }}"
+      run: |
+        anaconda login \
+            --at anaconda.org \
+            --username ${{ inputs.username }} \
+            --password "${{ inputs.password }}"
 
     - name: upload-to-anaconda
       working-directory: ${{ inputs.wheels }}
