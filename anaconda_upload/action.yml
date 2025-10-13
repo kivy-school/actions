@@ -19,7 +19,7 @@ runs:
       run: |
         pip install anaconda-client anaconda-auth
     - name: login-to-anaconda
-      uses: kivy-school/actions/with-post-steps@main
+      uses: kivy-school/actions/with-post-step@main
       with:
         main: |
           anaconda login \
