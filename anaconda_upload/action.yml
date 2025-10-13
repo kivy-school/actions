@@ -28,6 +28,7 @@ runs:
             --password "${{ inputs.password }}"
         post: anaconda logout --at anaconda.org
     - name: upload-to-anaconda
+      shell: bash
       working-directory: ${{ inputs.wheels }}
       run: |
         for FILE in *
