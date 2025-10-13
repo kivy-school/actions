@@ -1,35 +1,40 @@
 name: 'Hello World'
 description: 'Greet someone'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  username:  # id of input
+    description: 'anaconda.org username'
     required: true
-    default: 'World'
-outputs:
-  random-number:
-    description: "Random number"
-    value: ${{ steps.random-number-generator.outputs.random-number }}
+  password:
+    description: 'anaconda.org password'
+    required: true
+  wheels:
+    description: 'folder containing wheels'
+    required: true
+  
 runs:
   using: "composite"
+  post:
+      run: anaconda logout --at anaconda.org
   steps:
-    - name: Set Greeting
-      run: echo "Hello $INPUT_WHO_TO_GREET."
-      shell: bash
-      env:
-        INPUT_WHO_TO_GREET: ${{ inputs.who-to-greet }}
 
-    - name: Random Number Generator
-      id: random-number-generator
-      run: echo "random-number=$(echo $RANDOM)" >> $GITHUB_OUTPUT
-      shell: bash
+    - name: install anaconda client
+        run: |
+          pip install anaconda-client anaconda-auth
+      
+    - name: login-to-anaconda
+            run: |
+              anaconda login \
+                  --at anaconda.org \
+                  --username ${{ inputs.username }} \
+                  --password "${{ inputs.password }}"
 
-    - name: Set GitHub Path
-      run: echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
-      shell: bash
-      env:
-        GITHUB_ACTION_PATH: ${{ github.action_path }}
+    - name: upload-to-anaconda
+      working-directory: ${{ inputs.wheels }}
+      run: |
+        for FILE in *
+          do
+            anaconda upload --force $FILE
+          done
+      
 
-    - name: Run goodbye.sh
-      run: goodbye.sh
-      shell: bash
-
+    
