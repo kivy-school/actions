@@ -13,22 +13,20 @@ inputs:
   
 runs:
   using: "composite"
-  post:
-      run: anaconda logout --at anaconda.org
   steps:
-
     - name: install anaconda client
       shell: bash
       run: |
         pip install anaconda-client anaconda-auth
-      
     - name: login-to-anaconda
-      run: |
-        anaconda login \
+      uses: ./.github/actions/with-post-steps
+      with:
+        main: |
+          anaconda login \
             --at anaconda.org \
             --username ${{ inputs.username }} \
             --password "${{ inputs.password }}"
-
+        post: anaconda logout --at anaconda.org
     - name: upload-to-anaconda
       working-directory: ${{ inputs.wheels }}
       run: |
