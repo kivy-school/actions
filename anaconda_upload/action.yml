@@ -18,23 +18,28 @@ runs:
       shell: bash
       run: |
         pip install anaconda-client anaconda-auth
+        
     - name: login-to-anaconda
-      uses: kivy-school/actions/with-post-step@main
-      with:
-        main: |
-          anaconda login \
-            --at anaconda.org \
-            --username ${{ inputs.username }} \
-            --password "${{ inputs.password }}"
-        post: anaconda logout --at anaconda.org
+      shell: bash
+      run: |
+        anaconda login \
+          --at anaconda.org \
+          --username ${{ inputs.username }} \
+          --password "${{ inputs.password }}"
+          
     - name: upload-to-anaconda
       shell: bash
+      continue-on-error: true
       working-directory: ${{ inputs.wheels }}
       run: |
         for FILE in *
           do
             anaconda upload --force $FILE
           done
+
+    - name: logoff
+      shell: bash
+      run: anaconda logout --at anaconda.org
       
 
     
